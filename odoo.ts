@@ -12,6 +12,7 @@ interface ClientOptions {
 }
 
 export interface OdooParams {
+  uid?: string;
   odooUrl: string;
   db: string;
   username: string;
@@ -21,7 +22,7 @@ export interface OdooParams {
 export class Odoo {
   clientOptions: ClientOptions;
   db: string;
-  uid: number;
+  uid: string;
   user: string;
   pass: string;
   clientCommun: xmlrpc.Client;
@@ -33,6 +34,7 @@ export class Odoo {
     if (urlParsed.protocol === 'https:') {
       this.isSecure = false;
     }
+    this.uid = odooParams.uid;
     this.db = odooParams.db;
     this.user = odooParams.username;
     this.pass = odooParams.password;
@@ -81,7 +83,7 @@ export class Odoo {
     }
   }
 
-  async executeKW(inputParams: OdooFilters) {
+  async executeKW(inputParams: OdooFilters): Promise<any[]> {
     this.objectConn();
     const params: Array<any> = [this.db, String(this.uid), this.pass];
     params.push(inputParams.model);
@@ -92,8 +94,10 @@ export class Odoo {
     return new Promise((resolve, reject) => {
       this.clientObject.methodCall('execute_kw', params, (err, value) => {
         if (!err) {
+          console.log(err);
           resolve(value);
         } else {
+          console.log(err);
           reject(err);
         }
       });

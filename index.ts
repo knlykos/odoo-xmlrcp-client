@@ -73,6 +73,7 @@
 import { Odoo, OdooParams, OdooFilters } from './odoo';
 
 const odooParams: OdooParams = {
+  uid: '1',
   db: 'elmalecon',
   odooUrl: 'http://elmalecon.nkodexsoft.com:8069',
   username: 'administrador',
@@ -85,28 +86,18 @@ let odooFilters: OdooFilters = {
   filters: { fields: ['name'], limit: 100 }
 };
 const odoo = new Odoo(odooParams);
+// odoo
+//   .authenticate()
+//   .then(value => {
+//     // console.log(value);
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
 odoo
-  .authenticate()
+  .executeKW(odooFilters)
   .then(value => {
-    // console.log(value);
-
-    odoo
-      .executeKW(odooFilters)
-      .then(value => {
-        console.log(value);
-        // odooFilters = {
-        //   model: 'res.partner',
-        //   method: 'search_read',
-        //   params: [value],
-        //   filters: { fields: ['name', 'country_id', 'comment'], limit: 5 }
-        // };
-        // odoo.executeKW(odooFilters).then(value => {
-        //   console.log(JSON.stringify(value));
-        // });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    console.log(value);
   })
   .catch(err => {
     console.log(err);
