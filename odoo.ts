@@ -12,7 +12,7 @@ interface ClientOptions {
 }
 
 export interface OdooParams {
-  uid?: string;
+  uid?: number;
   odooUrl: string;
   db: string;
   username: string;
@@ -22,7 +22,7 @@ export interface OdooParams {
 export class Odoo {
   clientOptions: ClientOptions;
   db: string;
-  uid: string;
+  uid: number;
   user: string;
   pass: string;
   clientCommun: xmlrpc.Client;
@@ -85,7 +85,7 @@ export class Odoo {
 
   async executeKW(inputParams: OdooFilters): Promise<any[]> {
     this.objectConn();
-    const params: Array<any> = [this.db, String(this.uid), this.pass];
+    const params: Array<any> = [this.db, this.uid, this.pass];
     params.push(inputParams.model);
     params.push(inputParams.method);
     params.push(inputParams.params);
