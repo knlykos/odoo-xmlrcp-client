@@ -71,19 +71,21 @@
 // );
 
 import { Odoo, OdooParams, OdooFilters } from './odoo';
+const fs = require('fs');
 
 const odooParams: OdooParams = {
-  uid: 1,
-  db: 'elmalecon',
-  odooUrl: 'http://elmalecon.nkodexsoft.com:8069',
+  uid: 2,
+  db: 'demo',
+  odooUrl: 'http://172.17.0.4:8069',
   username: 'administrador',
   password: '123456'
 };
 
 let odooFilters: OdooFilters = {
-  model: 'stock.inventory',
+  model: 'product.product',
   method: 'search_read',
-  params: []
+  params: [],
+  filters: { limit: 1 }
 };
 //////////////////////////////
 //////////////////////////////
@@ -101,6 +103,29 @@ let odooFilters: OdooFilters = {
 //////////////////////////////
 //////////////////////////////
 const odoo = new Odoo(odooParams);
+odoo
+  .executeKW(odooFilters)
+  .then(res => {
+    console.log(res);
+    fs.writeFile('/tmp/test', JSON.stringify(res), function(err) {
+      if (err) {
+        return console.log(err);
+      }
+
+      console.log('The file was saved!');
+    });
+    // let odooFilters2: OdooFilters = {
+    //   model: 'res.partner',
+    //   method: 'read',
+    //   params: [res]
+    // };
+    // odoo.executeKW(odooFilters2).then(res => {
+    //   console.log(res);
+    // });
+  })
+  .catch(err => {
+    console.log(err);
+  });
 // odoo
 //   .authenticate()
 //   .then(value => {
@@ -109,11 +134,15 @@ const odoo = new Odoo(odooParams);
 //   .catch(err => {
 //     console.log(err);
 //   });
-odoo
-  .executeKW(odooFilters)
-  .then(value => {
-    console.log(value);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+// odoo
+//   .executeKW(odooFilters)
+//   .then(value => {
+//     console.log(value);
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
+
+// odoo.authenticate().then(res => {
+//   console.log(res);
+// });
