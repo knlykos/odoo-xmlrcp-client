@@ -2,6 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { StockInventoryService } from './stock-inventory.service';
 
 @Controller('stock-inventory')
+// Route
 export class StockInventoryController {
   constructor(private stockInventoryService: StockInventoryService) {}
   @Get()
