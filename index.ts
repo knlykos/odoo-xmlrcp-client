@@ -71,6 +71,7 @@
 // );
 
 import { Odoo, OdooParams, OdooFilters } from './odoo';
+import { StockInventoryLineOut } from './picking/dist/picking/src/shared/models/stock-inventory-line.models';
 const fs = require('fs');
 
 const odooParams: OdooParams = {
@@ -82,46 +83,28 @@ const odooParams: OdooParams = {
 };
 
 let odooFilters: OdooFilters = {
-  model: 'product.product',
+  model: 'stock.inventory.line',
   method: 'search_read',
-  params: [],
-  filters: { limit: 1 }
+  params: [[['id', '=', 1]]],
+  filters: {}
 };
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
 const odoo = new Odoo(odooParams);
 odoo
   .executeKW(odooFilters)
-  .then(res => {
-    console.log(res);
-    fs.writeFile('/tmp/test', JSON.stringify(res), function(err) {
-      if (err) {
-        return console.log(err);
-      }
+  .then((res: StockInventoryLineOut[]) => {
+    console.log(res[0].id);
 
-      console.log('The file was saved!');
+    res.forEach((v, i, a) => {
+      let odooFilters2: OdooFilters = {
+        model: 'product.product',
+        method: 'search_read',
+        params: [[['id', '=', v.product_id[0]]]]
+      };
+      odoo.executeKW(odooFilters2).then(res => {
+        v.products = res;
+      });
     });
-    // let odooFilters2: OdooFilters = {
-    //   model: 'res.partner',
-    //   method: 'read',
-    //   params: [res]
-    // };
-    // odoo.executeKW(odooFilters2).then(res => {
-    //   console.log(res);
-    // });
+    console.log(res);
   })
   .catch(err => {
     console.log(err);
