@@ -77,42 +77,41 @@ const fs = require('fs');
 const odooParams: OdooParams = {
   uid: 2,
   db: 'demo',
-  odooUrl: 'http://172.17.0.4:8069',
+  odooUrl: 'http://172.17.0.1:8069',
   username: 'administrador',
   password: '123456'
 };
 
 let odooFilters: OdooFilters = {
-  model: 'stock.inventory.line',
+  model: 'product.product',
   method: 'search_read',
-  params: [[['id', '=', 1]]],
+  params: [[['name', 'like', 'Acoustic']]],
   filters: {}
 };
 const odoo = new Odoo(odooParams);
-odoo
-  .executeKW(odooFilters)
-  .then((res: StockInventoryLineOut[]) => {
-    console.log(res[0].id);
+odoo.executeKW(odooFilters).then(res => {
+  console.log(res);
+});
 
-    res.forEach((v, i, a) => {
-      let odooFilters2: OdooFilters = {
-        model: 'product.product',
-        method: 'search_read',
-        params: [[['id', '=', v.product_id[0]]]]
-      };
-      odoo.executeKW(odooFilters2).then(res => {
-        v.products = res;
-      });
-    });
-    console.log(res);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+//     res.forEach((v, i, a) => {
+//       let odooFilters2: OdooFilters = {
+//         model: 'product.product',
+//         method: 'search_read',
+//         params: [[['id', '=', v.product_id[0]]]]
+//       };
+//       odoo.executeKW(odooFilters2).then(res => {
+//         v.products = res;
+//       });
+//     });
+//     console.log(res);
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
 // odoo
 //   .authenticate()
 //   .then(value => {
-//     // console.log(value);
+//     console.log(value);
 //   })
 //   .catch(err => {
 //     console.log(err);

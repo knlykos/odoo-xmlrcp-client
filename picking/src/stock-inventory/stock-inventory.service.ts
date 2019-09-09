@@ -50,19 +50,22 @@ export class StockInventoryService {
     return product;
   }
   async findOneProductByFilters(value: string): Promise<ProductProductOut[]> {
-    const allProductsSearched: ProductProductOut[] = [];
+    let allProductsSearched: ProductProductOut[] = [];
 
     const odoo = new Odoo(odooConfig);
     const odooFilters: OdooFilters = {
       model: 'product.product',
       method: 'search_read',
-      params: [[['barcode', 'ilike', value]]],
+      params: [[['name', 'like', 'Acoustic']]],
+      filters: {},
     };
     const productDefaultCode = (await odoo.executeKW(
       odooFilters,
     )) as ProductProductOut[];
+    console.log(productDefaultCode);
     if (productDefaultCode.length > 0) {
-      allProductsSearched.push.apply(productDefaultCode);
+      allProductsSearched = allProductsSearched.concat(productDefaultCode);
+      console.log(allProductsSearched);
     }
     const odooFilters2: OdooFilters = {
       model: 'product.product',
@@ -73,7 +76,8 @@ export class StockInventoryService {
       odooFilters2,
     )) as ProductProductOut[];
     if (productName.length > 0) {
-      allProductsSearched.push.apply(productName);
+      allProductsSearched = allProductsSearched.concat(productName);
+      console.log(allProductsSearched);
     }
     const odooFilters3: OdooFilters = {
       model: 'product.product',
@@ -84,7 +88,8 @@ export class StockInventoryService {
       odooFilters3,
     )) as ProductProductOut[];
     if (productBarcode.length > 0) {
-      allProductsSearched.push.apply(productBarcode);
+      allProductsSearched = allProductsSearched.concat(productBarcode);
+      console.log(allProductsSearched);
     }
     return allProductsSearched;
   }
