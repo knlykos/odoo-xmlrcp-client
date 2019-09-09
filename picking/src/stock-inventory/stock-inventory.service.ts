@@ -19,7 +19,6 @@ export class StockInventoryService {
   }
 
   async findAllDetails(inventoryId: number): Promise<any[]> {
-
     const odooFilters: OdooFilters = {
       model: 'stock.inventory.line',
       method: 'search_read',
@@ -30,27 +29,64 @@ export class StockInventoryService {
     this.stockInventoryLine = (await odoo.executeKW(
       odooFilters,
     )) as StockInventoryLineOut[];
-    console.log(1);
+
     const promise = this.stockInventoryLine.map(async (v, i, a) => {
-      console.log(2);
-      const product = await this.findOneProductProduct(v
-        .product_id[0] as number);
+      const product = await this.findOneProductById(v.product_id[0] as number);
       this.stockInventoryLine[i].products = product;
     });
     await Promise.all(promise);
-    console.log(4);
+
     return this.stockInventoryLine;
   }
 
-  async findOneProductProduct(productId: number): Promise<ProductProductOut[]> {
+  async findOneProductById(productId: number): Promise<ProductProductOut[]> {
     const odoo = new Odoo(odooConfig);
     const odooFilters2: OdooFilters = {
       model: 'product.product',
       method: 'search_read',
-      params: [[['id', '=', productId]]],
+      params: [[['id', 'like', productId]]],
     };
     const product = (await odoo.executeKW(odooFilters2)) as ProductProductOut[];
-    console.log(3);
     return product;
   }
+  async findOneProductByFilters(value: string): Promise<ProductProductOut[]> {
+    const allProductsSearched: ProductProductOut[] = [];
+
+    const odoo = new Odoo(odooConfig);
+    const odooFilters: OdooFilters = {
+      model: 'product.product',
+      method: 'search_read',
+      params: [[['barcode', 'ilike', value]]],
+    };
+    const productDefaultCode = (await odoo.executeKW(
+      odooFilters,
+    )) as ProductProductOut[];
+    if (productDefaultCode.length > 0) {
+      allProductsSearched.push.apply(productDefaultCode);
+    }
+    const odooFilters2: OdooFilters = {
+      model: 'product.product',
+      method: 'search_read',
+      params: [[['name', 'like', value]]],
+    };
+    const productName = (await odoo.executeKW(
+      odooFilters2,
+    )) as ProductProductOut[];
+    if (productName.length > 0) {
+      allProductsSearched.push.apply(productName);
+    }
+    const odooFilters3: OdooFilters = {
+      model: 'product.product',
+      method: 'search_read',
+      params: [[['default_code', 'ilike', value]]],
+    };
+    const productBarcode = (await odoo.executeKW(
+      odooFilters3,
+    )) as ProductProductOut[];
+    if (productBarcode.length > 0) {
+      allProductsSearched.push.apply(productBarcode);
+    }
+    return allProductsSearched;
+  }
 }
+// , ['barcode', 'like', 5000]
