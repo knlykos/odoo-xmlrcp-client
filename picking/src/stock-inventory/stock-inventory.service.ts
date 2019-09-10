@@ -7,12 +7,12 @@ import { ProductProductOut } from 'src/shared/models/product-product.models';
 @Injectable()
 export class StockInventoryService {
   stockInventoryLine: StockInventoryLineOut[] = [];
-  async findAll(offset: number, limit: number) {
+  async findAll(offsetParam: number, limitParam: number) {
     const odooFilters: OdooFilters = {
       model: 'stock.inventory',
       method: 'search_read',
       params: [],
-      filters: { offset: 0, limit: 20 },
+      filters: { offset: offsetParam, limit: limitParam },
     };
     const odoo = new Odoo(odooConfig);
     return await odoo.executeKW(odooFilters);
