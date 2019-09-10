@@ -5,9 +5,14 @@ import { StockInventoryService } from './stock-inventory.service';
 // Route
 export class StockInventoryController {
   constructor(private stockInventoryService: StockInventoryService) {}
+
+  // http://localhost:3000/stock-inventory?offset=1&limit=2
   @Get()
-  findAll(@Query() query: { offset: number; limit: number }) {
-    const data = this.stockInventoryService.findAll(query.offset, query.limit);
+  findAll(@Query('offset') offset: number, @Query('limit') limit: number) {
+    const data = this.stockInventoryService.findAll(
+      Number(offset),
+      Number(limit),
+    );
     return data;
   }
 }
