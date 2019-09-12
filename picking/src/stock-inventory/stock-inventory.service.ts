@@ -3,6 +3,7 @@ import { OdooParams, OdooFilters, Odoo } from '../../../odoo';
 import { odooConfig } from './../shared/config/odoo-config';
 import { StockInventoryLineOut } from 'src/shared/models/stock-inventory-line.models';
 import { ProductProductOut } from 'src/shared/models/product-product.models';
+import { StockInventoryOut } from 'src/shared/models/stock-inventory.model';
 
 @Injectable()
 export class StockInventoryService {
@@ -96,13 +97,14 @@ export class StockInventoryService {
     return allProductsSearched;
   }
 
-  createInventoryStock() {
+  createInventoryStock(stockInventory: StockInventoryOut) {
     const odooFilters: OdooFilters = {
       model: 'stock.inventory',
       method: 'create',
       params: [
         {
           name: 'Annual Inventory',
+          filter: 'partial',
         },
       ],
     };

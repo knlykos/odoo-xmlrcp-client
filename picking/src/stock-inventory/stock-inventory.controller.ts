@@ -17,6 +17,8 @@ export class StockInventoryController {
     return data;
   }
 
-  // @Post()
-  // createInventoryStock(@Body() createInventory: StockInventoryOut) {}
+  @Post()
+  createInventoryStock(@Body() stockInventoryOut: StockInventoryOut) {
+    this.stockInventoryService.createInventoryStock(stockInventoryOut);
+  }
 }
