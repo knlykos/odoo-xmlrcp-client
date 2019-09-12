@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body } from '@nestjs/common';
 import { StockInventoryService } from './stock-inventory.service';
+import { StockInventoryOut } from 'src/shared/models/stock-inventory.model';
 
 @Controller('stock-inventory')
 // Route
@@ -15,4 +16,7 @@ export class StockInventoryController {
     );
     return data;
   }
+
+  @Post()
+  createInventoryStock(@Body() createInventory: StockInventoryOut) {}
 }

@@ -6,6 +6,8 @@ import { ProductProductOut } from 'src/shared/models/product-product.models';
 
 @Injectable()
 export class StockInventoryService {
+  odoo: Odoo = new Odoo(odooConfig);
+
   stockInventoryLine: StockInventoryLineOut[] = [];
   async findAll(offsetParam: number, limitParam: number) {
     const odooFilters: OdooFilters = {
@@ -14,8 +16,8 @@ export class StockInventoryService {
       params: [],
       filters: { offset: offsetParam, limit: limitParam },
     };
-    const odoo = new Odoo(odooConfig);
-    return await odoo.executeKW(odooFilters);
+
+    return await this.odoo.executeKW(odooFilters);
   }
 
   async findAllDetails(inventoryId: number): Promise<any[]> {
@@ -25,8 +27,8 @@ export class StockInventoryService {
       params: [[['inventory_id', '=', 1]]],
       filters: {},
     };
-    const odoo = new Odoo(odooConfig);
-    this.stockInventoryLine = (await odoo.executeKW(
+
+    this.stockInventoryLine = (await this.odoo.executeKW(
       odooFilters,
     )) as StockInventoryLineOut[];
 
@@ -40,26 +42,26 @@ export class StockInventoryService {
   }
 
   async findOneProductById(productId: number): Promise<ProductProductOut[]> {
-    const odoo = new Odoo(odooConfig);
     const odooFilters2: OdooFilters = {
       model: 'product.product',
       method: 'search_read',
       params: [[['id', 'like', productId]]],
     };
-    const product = (await odoo.executeKW(odooFilters2)) as ProductProductOut[];
+    const product = (await this.odoo.executeKW(
+      odooFilters2,
+    )) as ProductProductOut[];
     return product;
   }
   async findOneProductByFilters(value: string): Promise<ProductProductOut[]> {
     let allProductsSearched: ProductProductOut[] = [];
 
-    const odoo = new Odoo(odooConfig);
     const odooFilters: OdooFilters = {
       model: 'product.product',
       method: 'search_read',
       params: [[['name', 'like', 'Acoustic']]],
       filters: {},
     };
-    const productDefaultCode = (await odoo.executeKW(
+    const productDefaultCode = (await this.odoo.executeKW(
       odooFilters,
     )) as ProductProductOut[];
     console.log(productDefaultCode);
@@ -72,7 +74,7 @@ export class StockInventoryService {
       method: 'search_read',
       params: [[['name', 'like', value]]],
     };
-    const productName = (await odoo.executeKW(
+    const productName = (await this.odoo.executeKW(
       odooFilters2,
     )) as ProductProductOut[];
     if (productName.length > 0) {
@@ -84,7 +86,7 @@ export class StockInventoryService {
       method: 'search_read',
       params: [[['default_code', 'ilike', value]]],
     };
-    const productBarcode = (await odoo.executeKW(
+    const productBarcode = (await this.odoo.executeKW(
       odooFilters3,
     )) as ProductProductOut[];
     if (productBarcode.length > 0) {
@@ -92,6 +94,20 @@ export class StockInventoryService {
       console.log(allProductsSearched);
     }
     return allProductsSearched;
+  }
+
+  createInventoryStock() {
+    const odooFilters: OdooFilters = {
+      model: 'stock.inventory',
+      method: 'create',
+      params: [
+        {
+          name: 'Annual Inventory',
+        },
+      ],
+    };
+    const id = this.odoo.executeKW(odooFilters);
+    return id;
   }
 }
 // , ['barcode', 'like', 5000]
