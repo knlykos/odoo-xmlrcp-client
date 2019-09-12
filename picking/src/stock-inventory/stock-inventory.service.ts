@@ -97,18 +97,14 @@ export class StockInventoryService {
     return allProductsSearched;
   }
 
-  createInventoryStock(stockInventory: StockInventoryOut) {
+  async createInventoryStock(stockInventory: StockInventoryOut) {
     const odooFilters: OdooFilters = {
       model: 'stock.inventory',
       method: 'create',
-      params: [
-        {
-          name: 'Annual Inventory',
-          filter: 'partial',
-        },
-      ],
+      params: [stockInventory],
     };
-    const id = this.odoo.executeKW(odooFilters);
+    console.log(odooFilters);
+    const id = await this.odoo.executeKW(odooFilters);
     return id;
   }
 }

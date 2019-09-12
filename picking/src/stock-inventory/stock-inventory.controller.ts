@@ -19,6 +19,10 @@ export class StockInventoryController {
 
   @Post()
   createInventoryStock(@Body() stockInventoryOut: StockInventoryOut) {
-    this.stockInventoryService.createInventoryStock(stockInventoryOut);
+    console.log(stockInventoryOut);
+    const data = this.stockInventoryService.createInventoryStock(
+      stockInventoryOut,
+    );
+    return data;
   }
 }
