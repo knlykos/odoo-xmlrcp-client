@@ -8,6 +8,7 @@ import { StockInventoryOut } from 'src/shared/models/stock-inventory.model';
 @Injectable()
 export class StockInventoryService {
   odoo: Odoo = new Odoo(odooConfig);
+  odooFilters: OdooFilters;
 
   stockInventoryLine: StockInventoryLineOut[] = [];
   async findAll(offsetParam: number, limitParam: number) {
@@ -25,7 +26,7 @@ export class StockInventoryService {
     const odooFilters: OdooFilters = {
       model: 'stock.inventory.line',
       method: 'search_read',
-      params: [[['inventory_id', '=', 1]]],
+      params: [[['inventory_id', '=', inventoryId]]],
       filters: {},
     };
 
@@ -106,6 +107,36 @@ export class StockInventoryService {
     console.log(odooFilters);
     const id = await this.odoo.executeKW(odooFilters);
     return id;
+  }
+
+  async createStockInventoryDetail(stockInventoryLine: StockInventoryLineOut) {
+    const odooFilters: OdooFilters = {
+      model: 'stock.inventory.line',
+      method: 'create',
+      params: [stockInventoryLine],
+    };
+
+    return this.odoo.executeKW(odooFilters);
+  }
+
+  async updateStockInventoryDetail(stockInventoryLine: StockInventoryLineOut) {
+    const id2Update = stockInventoryLine.id;
+
+    this.odooFilters = {
+      model: 'stock.inventory.line',
+      method: 'write',
+      params: [stockInventoryLine.id, stockInventoryLine],
+    };
+
+    await this.odoo.executeKW(this.odooFilters);
+
+    this.odooFilters = {
+      model: 'stock.inventory.line',
+      method: 'name_get',
+      params: [[stockInventoryLine.id]],
+    };
+    return await this.odoo.executeKW(this.odooFilters);
+
   }
 }
 // , ['barcode', 'like', 5000]

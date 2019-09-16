@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Body, Post, Put } from '@nestjs/common';
 import { StockInventoryService } from '../stock-inventory.service';
+import { StockInventoryLineOut } from 'src/shared/models/stock-inventory-line.models';
 
 @Controller('stock-inventory/stock-details')
 // Route
@@ -26,6 +27,30 @@ export class StockDetailsController {
   async findOneProductByFilters(@Query('value') value: string) {
     const data = await this.stockInventoryService.findOneProductByFilters(
       value,
+    );
+    return data;
+  }
+  @Post('')
+  async createStockInventoryDetail(
+    @Body() stockInventoryLine: StockInventoryLineOut,
+  ) {
+    // stockInventoryLine = {
+    //   id,
+    //   inventory_id,
+    //   product_qty,
+    //   display_name
+    // };
+    const data = await this.stockInventoryService.createStockInventoryDetail(
+      stockInventoryLine,
+    );
+    return data;
+  }
+  @Put()
+  async updateStockInventoryDetail(
+    @Body() stockInventoryLine: StockInventoryLineOut,
+  ) {
+    const data = await this.stockInventoryService.updateStockInventoryDetail(
+      stockInventoryLine,
     );
     return data;
   }
