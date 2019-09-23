@@ -17,6 +17,12 @@ export class StockInventoryController {
     return data;
   }
 
+  @Get('/stock-inventory-by-id')
+  findAllByIdStockInventory(@Query('id') id: number) {
+    const data = this.stockInventoryService.findAllByIdStockInventory(id);
+    return data;
+  }
+
   @Post()
   createInventoryStock(@Body() stockInventoryOut: StockInventoryOut) {
     console.log(stockInventoryOut);

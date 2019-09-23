@@ -22,6 +22,16 @@ export class StockInventoryService {
     return await this.odoo.executeKW(odooFilters);
   }
 
+  async findAllByIdStockInventory(id: number) {
+    const odooFilters: OdooFilters = {
+      model: 'stock.inventory',
+      method: 'search_read',
+      params: [[['id', '=', Number(id)]]],
+    };
+
+    return await this.odoo.executeKW(odooFilters);
+  }
+
   async findAllDetails(inventoryId: number): Promise<any[]> {
     const odooFilters: OdooFilters = {
       model: 'stock.inventory.line',
