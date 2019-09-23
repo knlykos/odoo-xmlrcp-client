@@ -54,45 +54,61 @@ export class StockInventoryService {
     )) as ProductProductOut[];
     return product;
   }
+
+  async findOneProductByBarcode(barcode: string): Promise<ProductProductOut[]> {
+    const odooFilters: OdooFilters = {
+      model: 'product.product',
+      method: 'search_read',
+      params: [[['barcode', '=', barcode]]],
+    };
+    const product = (await this.odoo.executeKW(
+      odooFilters,
+    )) as ProductProductOut[];
+    return product;
+  }
   async findOneProductByFilters(value: string): Promise<ProductProductOut[]> {
     let allProductsSearched: ProductProductOut[] = [];
 
     const odooFilters: OdooFilters = {
       model: 'product.product',
       method: 'search_read',
-      params: [[['name', 'like', 'Acoustic']]],
+      params: [[['name', 'ilike', value]]],
       filters: {},
     };
     const productDefaultCode = (await this.odoo.executeKW(
       odooFilters,
     )) as ProductProductOut[];
+    // tslint:disable-next-line: no-console
     console.log(productDefaultCode);
     if (productDefaultCode.length > 0) {
       allProductsSearched = allProductsSearched.concat(productDefaultCode);
+      // tslint:disable-next-line: no-console
       console.log(allProductsSearched);
     }
     const odooFilters2: OdooFilters = {
       model: 'product.product',
       method: 'search_read',
-      params: [[['name', 'like', value]]],
+      params: [[['default_code', 'ilike', value]]],
     };
     const productName = (await this.odoo.executeKW(
       odooFilters2,
     )) as ProductProductOut[];
     if (productName.length > 0) {
       allProductsSearched = allProductsSearched.concat(productName);
+      // tslint:disable-next-line: no-console
       console.log(allProductsSearched);
     }
     const odooFilters3: OdooFilters = {
       model: 'product.product',
       method: 'search_read',
-      params: [[['default_code', 'ilike', value]]],
+      params: [[['barcode', 'ilike', value]]],
     };
     const productBarcode = (await this.odoo.executeKW(
       odooFilters3,
     )) as ProductProductOut[];
     if (productBarcode.length > 0) {
       allProductsSearched = allProductsSearched.concat(productBarcode);
+      // tslint:disable-next-line: no-console
       console.log(allProductsSearched);
     }
     return allProductsSearched;
@@ -104,6 +120,7 @@ export class StockInventoryService {
       method: 'create',
       params: [stockInventory],
     };
+    // tslint:disable-next-line: no-console
     console.log(odooFilters);
     const id = await this.odoo.executeKW(odooFilters);
     return id;
@@ -136,7 +153,6 @@ export class StockInventoryService {
       params: [[stockInventoryLine.id]],
     };
     return await this.odoo.executeKW(this.odooFilters);
-
   }
 }
 // , ['barcode', 'like', 5000]

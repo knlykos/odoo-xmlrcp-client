@@ -21,6 +21,14 @@ export class StockDetailsController {
     const data = await this.stockInventoryService.findOneProductById(productId);
     return data;
   }
+
+  @Get('/get-product-by-barcode')
+  async findOneProductByBarcode(@Query('barcode') barcode: string) {
+    const data = await this.stockInventoryService.findOneProductByBarcode(
+      barcode,
+    );
+    return data;
+  }
   // http://localhost:3000/stock-inventory/stock-details/get-product-by-filters?value=ValordeBusqueda
   // ValordeBusqueda = barcode || default_code || name
   @Get('/get-product-by-filters')
