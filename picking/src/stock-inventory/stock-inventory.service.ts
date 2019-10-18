@@ -15,7 +15,7 @@ export class StockInventoryService {
     const odooFilters: OdooFilters = {
       model: 'stock.inventory',
       method: 'search_read',
-      params: [],
+      params: [[['state', '=', 'confirm']]],
       filters: { offset: offsetParam, limit: limitParam },
     };
 
