@@ -53,7 +53,7 @@ export class Odoo {
       // this.clientObject = xmlrpc.createSecureClient(this.clientOptions);
     } else {
       this.clientOptions.path = '/xmlrpc/2/common';
-      this.clientCommun = xmlrpc.createClient(this.clientOptions);
+      this.clientCommun = xmlrpc.createSecureClient(this.clientOptions);
       // this.clientOptions.path = '/xmlrpc/2/object';
       // this.clientObject = xmlrpc.createClient(this.clientOptions);
     }
@@ -79,7 +79,7 @@ export class Odoo {
       this.clientObject = xmlrpc.createSecureClient(this.clientOptions);
     } else {
       this.clientOptions.path = '/xmlrpc/2/object';
-      this.clientObject = xmlrpc.createClient(this.clientOptions);
+      this.clientObject = xmlrpc.createSecureClient(this.clientOptions);
     }
   }
 

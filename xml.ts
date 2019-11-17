@@ -42,7 +42,7 @@ export class Odoo {
 
     let client: xmlrpc.Client;
     if (this.secure === false) {
-      client = xmlrpc.createClient(clientOptions);
+      client = xmlrpc.createSecureClient(clientOptions);
     } else {
       client = xmlrpc.createSecureClient(clientOptions);
     }
